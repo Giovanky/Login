@@ -1,3 +1,23 @@
+<?php
+session_start();
+require 'database.php';
+$message = '';
+if (!empty($_POST['email']) && !empty($_POST['pass'])) {
+    $sql = "Select id,correo,contrasena from login where correo=:email";
+    $stmt = $conexion->prepare($sql);
+    $stmt->bindValue(':email', $_POST['email']);
+    $stmt->execute();
+    $resultado=$stmt->fetch(PDO::FETCH_ASSOC);
+
+    $message='';
+
+    if (count($resultado) > 0 && password_verify($_POST['pass'], $resultado['contrasena'])) {
+    $_SESSION['id'] = $resultado['id'];
+    header("Location: /proyecto");
+    }else{
+    $message = 'No coinciden las contraseñas';
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +31,10 @@
 </head>
 <body>
 <?php require 'partials/header.php' ?>
+<?php require 'partials/header.php' ?>
+<?php if(!empty($message)): ?>
+    <p id="error"><?= $message ?></p>
+<?php endif; ?>
     <h1>Inicia Sesion</h1>
     <span>o <a href="signup.php">Registrate</a></span>
     <form action="login.php" method="post">
