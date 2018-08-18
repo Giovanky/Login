@@ -1,18 +1,23 @@
 <?php
-  require 'database.php';
-  $message = '';
-  if (!empty($_POST['nombre']) && !empty($_POST['email']) && !empty($_POST['pass']) && !empty($_POST['rpass'])) {
-    $sql = "INSERT INTO login (nombre,contraseña,correo) VALUES (:nombre, :email, :pass)";
-    $stmt = $conexion->prepare($sql);
-    $stmt->bindParam(':nombre', $_POST['nombre']);
-    $stmt->bindParam(':email', $_POST['email']);
-    $password = password_hash($_POST['pass'], PASSWORD_BCRYPT);
-    $stmt->bindParam(':password', $password);
-    if ($stmt->execute()) {
-      $message = 'Nuevo usuario ingresado con exito';
-    } else {
-      $message = 'No se ha podido crear el usuario';
-    }
+  try{
+    require 'database.php';
+    $message = '';
+    if (!empty($_POST['email']) && !empty($_POST['pass']) && !empty($_POST['rpass'])) {
+      $sql = "Insert into login (correo,contrasena) values (:email,:pass)";
+      $stmt = $conexion->prepare($sql);
+      $stmt->bindValue(':email', $_POST['email']);
+      $pass = password_hash($_POST['pass'], PASSWORD_BCRYPT);
+      $stmt->bindValue(':pass', $pass);
+      $stmt->execute();
+      $cambio=$stmt->rowCount();
+      if($cambio>0) { 
+        $message = 'Nuevo usuario ingresado con exito';
+      } else {
+        $message = 'No se ha podido crear el usuario';
+      }
+    }  
+  }catch(Exception $e){
+    die("Error: ".$e->getMessage());
   }
 ?>
 <!DOCTYPE html>
@@ -29,16 +34,15 @@
 <body>
 <?php require 'partials/header.php' ?>
 <?php if(!empty($message)): ?>
-    <p><?= $message?></p>
+    <p id="error"><?= $message ?></p>
 <?php endif; ?>
 <h1>Registrate</h1>
 <span>o <a href="login.php">Inicia Sesion</a></span>
-<form action="signup.php" method="post">
-    <input type="text" name="nombre" placeholder="Ingrese su nombre" required>
+<form action="signup.php" method="post" onsubmit="return Validate()" name="form">
     <input type="email" name="email" placeholder="Ingrese su correo" required>
-    <input type="password" name="pass" placeholder="Ingrese su contraseña" required>
+    <input type="password" name="pass" placeholder="Ingrese su contraseña" id="pass" minlength="8" required>
     <input type="password" name="rpass" placeholder="Repita su contraseña" required>
-    <input class="btn btn-outline-dark"type="submit" value="Registrar">
+    <input class="btn btn-outline-dark" type="submit" value="Registrar" id="boton">
 </form>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
