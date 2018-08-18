@@ -1,5 +1,5 @@
 <?php
-$host = 'localhost';
+$host = 'localhost:8080';
 $username = 'root';
 $password = '';
 $database = 'proyecto';
@@ -8,4 +8,3 @@ try {
 } catch (PDOException $e) {
   die('Conexion Fallida: ' . $e->getMessage());
 }
-shdkahsdkM;
