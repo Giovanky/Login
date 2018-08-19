@@ -24,7 +24,7 @@ if(isset($_SESSION['email'])){
 <body>
 <?php require 'partials/header.php' ?>
 <?php if(!empty($_SESSION['email'])):?>
-<br>Bienvenido.<?= $_SESSION['email']?>
+<br>Bienvenido <?= $_SESSION['email']?>
 <br> Has iniciado sesion <br>
 <a href="logout.php">Cerrar Sesion</a>
 <?php else: ?>
