@@ -11,9 +11,9 @@
       $stmt->execute();
       $cambio=$stmt->rowCount();
       if($cambio>0) { 
-        $message = 'Nuevo usuario ingresado con exito';
-      } else {
-        $message = 'No se ha podido crear el usuario';
+        $message = 'Nuevo usuario registrado con exito';
+      }else{
+        $message = 'No se ha podido registrar el usuario';
       }
     }  
   }catch(Exception $e){
@@ -28,8 +28,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Registrate</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <?php require 'partials/header.php' ?>

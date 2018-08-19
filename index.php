@@ -1,3 +1,14 @@
+<?php
+session_start();
+require 'database.php';
+if(isset($_SESSION['email'])){
+  $mail=htmlentities(addslashes($_SESSION['email']));
+  $sql="Select id,contrasena,correo from login where correo=:email";
+  $stmt=$conexion->prepare($sql);
+  $stmt->execute(array(":email"=>$mail));
+  $resultado=$stmt->fetch(PDO::FETCH_ASSOC);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,14 +18,20 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>index</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <?php require 'partials/header.php' ?>
+<?php if(!empty($_SESSION['email'])):?>
+<br>Bienvenido.<?= $_SESSION['email']?>
+<br> Has iniciado sesion <br>
+<a href="logout.php">Cerrar Sesion</a>
+<?php else: ?>
   <h1>Inicia Sesion o Registrate</h1>
-  <a href="login.php">inicia Sesion</a>
+  <a href="login.php">Inicia Sesion </a>
   <a href="signup.php">Registrate</a>
+<?php endif; ?>
   
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
