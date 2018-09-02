@@ -3,17 +3,44 @@
     require 'database.php';
     $message = '';
     if (!empty($_POST['email']) && !empty($_POST['pass']) && !empty($_POST['rpass'])) {
-      $sql = "Insert into login (correo,contrasena) values (:email,:pass)";
-      $stmt = $conexion->prepare($sql);
-      $stmt->bindValue(':email', $_POST['email']);
-      $pass = password_hash($_POST['pass'], PASSWORD_BCRYPT);
-      $stmt->bindValue(':pass', $pass);
-      $stmt->execute();
-      $cambio=$stmt->rowCount();
-      if($cambio>0) { 
-        $message = 'Nuevo usuario registrado con exito';
+      //Comprueba correo existente 
+      $mail=$_POST['email'];
+      $consulta=$conexion->prepare("Select correo from login where correo=$mail");
+      $consulta->execute(); 
+      $consulta=$consulta->rowCount();
+      if($consulta>0){
+        $message="Este usuario ya esta registrado";
       }else{
-        $message = 'No se ha podido registrar el usuario';
+        //Comprueba pass iguales
+        if($_POST['pass']===$_POST['rpass']){
+          $sql = "Insert into login (correo,contrasena) values (:email,:pass)";
+          $stmt = $conexion->prepare($sql);
+          $stmt->bindValue(':email', $_POST['email']);
+          $p=$_POST['pass'];
+          $pass = password_hash($_POST['pass'], PASSWORD_BCRYPT);
+          $stmt->bindValue(':pass', $pass);
+          $stmt->execute();
+          $cambio=$stmt->rowCount();
+          if($cambio>0) { 
+            //Enviar correo con contraseña
+            $textomail="Gracias por registrarte! Tu contraseña es: $p";
+            $destinatario=$_POST['email'];
+            $asunto="Ya estas registrado!";
+            $headers="MIME-Version: 1.0\r\n";
+            $headers.="Content-type: text/html; chartset=iso-8859-1\r\n";
+            $headers.="From: Aplicacion|\r\n".date("Y");
+            $exito=mail($destinatario,$asunto,$textomail,$headers);
+            if($exito){
+              $message = 'Nuevo usuario registrado con exito';
+            }else{
+              echo ("ha habido un error");
+            }
+        }else{
+          $message = 'No se ha podido registrar el usuario';
+        }
+       }else{
+         $message="Las contraseñas no coinciden";
+       }
       }
     }  
   }catch(Exception $e){
