@@ -24,7 +24,7 @@
           if($exito){
             $message = 'Nuevo usuario registrado con exito';
           }else{
-            echo ("ha habido un error");
+            $message = 'Ha habido un error';
           }
       }else{
         $message = 'No se ha podido registrar el usuario';
